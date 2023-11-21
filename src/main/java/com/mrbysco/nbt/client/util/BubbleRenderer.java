@@ -2,6 +2,7 @@ package com.mrbysco.nbt.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mojang.math.Matrix4f;
 import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.ConfigCache;
 import com.mrbysco.nbt.command.BubbleText;
@@ -15,7 +16,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
-import org.joml.Matrix4f;
 
 import java.util.List;
 
@@ -38,7 +38,7 @@ public class BubbleRenderer {
 		Matrix4f pose = poseStack.last().pose();
 
 		poseStack.translate(0.0D, entityHeight + (ConfigCache.bubbleOffset), 0.0D);
-		if(sequences.size() > 1)
+		if (sequences.size() > 1)
 			poseStack.translate(0.0D, (0.1F * sequences.size()), 0.0D);
 		poseStack.mulPose(renderDispatcher.cameraOrientation());
 		poseStack.scale(-0.025F, -0.025F, -0.025F);
@@ -59,7 +59,7 @@ public class BubbleRenderer {
 			}
 			if (sequence != null) {
 				font.drawInBatch(sequence, 0, offset, -1, false, pose,
-						buffer, Font.DisplayMode.NORMAL, 0, 15728880);
+						buffer, false, 0, 15728880);
 			}
 		}
 

@@ -99,10 +99,10 @@ public class ClientHandler {
 
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
-	public void onPlayerReceiveChat(ClientChatReceivedEvent.Player event) {
-		if (!ConfigCache.renderPlayerBubbles) return;
+	public void onPlayerReceiveChat(ClientChatReceivedEvent event) {
+		if (event.isSystem() || !ConfigCache.renderPlayerBubbles) return;
 
-		final UUID sender = event.getSender();
+		final UUID sender = event.getMessageSigner().profileId();
 		final Component message = event.getMessage();
 		final Minecraft mc = Minecraft.getInstance();
 		final Player player = mc.player;
@@ -112,7 +112,7 @@ public class ClientHandler {
 		Player senderPlayer = level.getPlayerByUUID(sender);
 		if (senderPlayer == null) return;
 
-		if (player.blockPosition().distManhattan(senderPlayer.blockPosition()) < 2000 || player.level().dimension().location().equals(senderPlayer.level().dimension().location())) {
+		if (player.blockPosition().distManhattan(senderPlayer.blockPosition()) < 2000 || player.level.dimension().location().equals(senderPlayer.level.dimension().location())) {
 			String senderName = senderPlayer.getGameProfile().getName();
 			String messageText = message.getString();
 			if (!BubbleHandler.addPlayerBubble(sender, new BubbleText(senderName, messageText, sender, level.getGameTime()))) {
