@@ -4,6 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.util.BubbleRenderer;
 import com.mrbysco.nbt.command.BubbleText;
+import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.EntityModel;
@@ -68,7 +69,7 @@ public class ClientHandler {
 		final Player localPlayer = mc.player;
 		if (localPlayer == null) return;
 
-		final Player player = event.getEntity();
+		final Player player = event.getPlayer();
 		if (player.isInvisibleTo(localPlayer)) return;
 
 		List<BubbleText> bubbles = BubbleHandler.getPlayerBubbles(player.getUUID());
@@ -100,14 +101,15 @@ public class ClientHandler {
 
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onPlayerReceiveChat(ClientChatReceivedEvent event) {
-		if (event.isSystem() || !ConfigCache.renderPlayerBubbles) return;
+		final UUID sender = event.getSenderUUID();
+		if (sender == null || sender == Util.NIL_UUID || !ConfigCache.renderPlayerBubbles) return;
 
-		final UUID sender = event.getMessageSigner().profileId();
 		final Component message = event.getMessage();
 		final Minecraft mc = Minecraft.getInstance();
 		final Player player = mc.player;
 		if (player == null) return;
 		final Level level = mc.level;
+		if (level == null) return;
 
 		Player senderPlayer = level.getPlayerByUUID(sender);
 		if (senderPlayer == null) return;

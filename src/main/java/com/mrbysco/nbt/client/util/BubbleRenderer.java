@@ -12,8 +12,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.TextComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.FormattedCharSequence;
 
@@ -26,7 +26,7 @@ public class BubbleRenderer {
 										EntityRenderDispatcher renderDispatcher, float entityHeight, float alpha, int light) {
 
 		String text = bubble.text();
-		MutableComponent component = Component.literal(text).withStyle(ChatFormatting.BLACK);
+		MutableComponent component = new TextComponent(text).withStyle(ChatFormatting.BLACK);
 		List<FormattedCharSequence> sequences = font.split(component, ConfigCache.maxTextWidth);
 		int textWidth = 0;
 		int textHeight = font.lineHeight * sequences.size();
