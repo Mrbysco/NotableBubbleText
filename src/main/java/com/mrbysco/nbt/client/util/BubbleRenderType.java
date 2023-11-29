@@ -19,8 +19,10 @@ public class BubbleRenderType extends RenderType {
 				CompositeState.builder()
 						.setTextureState(new RenderStateShard.TextureStateShard(texture, false, false))
 						.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
-						.setTransparencyState(TRANSLUCENT_TRANSPARENCY)
-						.setWriteMaskState(COLOR_WRITE)
+						.setTransparencyState(NO_TRANSPARENCY)
+//						.setWriteMaskState(COLOR_WRITE)
+						.setLightmapState(LIGHTMAP)
+						.setOverlayState(OVERLAY)
 						.createCompositeState(false));
 	}
 }

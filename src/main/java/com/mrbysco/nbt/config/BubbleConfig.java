@@ -13,6 +13,7 @@ public class BubbleConfig {
 		public final ForgeConfigSpec.IntValue maxTextWidth;
 		public final ForgeConfigSpec.DoubleValue yOffset;
 		public final ForgeConfigSpec.BooleanValue playerBubbles;
+		public final ForgeConfigSpec.BooleanValue nameOffset;
 
 		Client(ForgeConfigSpec.Builder builder) {
 			builder.comment("General settings")
@@ -29,6 +30,10 @@ public class BubbleConfig {
 			playerBubbles = builder
 					.comment("Render chat messages above players heads in a bubble")
 					.define("playerBubbles", true);
+
+			nameOffset = builder
+					.comment("Offset the bubble text if the entity's name is rendered above their head")
+					.define("nameOffset", true);
 
 			builder.pop();
 		}
@@ -86,6 +91,7 @@ public class BubbleConfig {
 	private static void refreshCache(ModConfig.Type type) {
 		if (type == ModConfig.Type.CLIENT) {
 			ConfigCache.setRenderPlayerBubbles(BubbleConfig.CLIENT.playerBubbles.get());
+			ConfigCache.setNameOffset(BubbleConfig.CLIENT.nameOffset.get());
 			ConfigCache.setMaxTextWidth(BubbleConfig.CLIENT.maxTextWidth.get());
 			ConfigCache.setBubbleOffset(BubbleConfig.CLIENT.yOffset.get());
 		}

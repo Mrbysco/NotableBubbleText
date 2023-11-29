@@ -8,6 +8,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,14 +52,30 @@ public class ClientHandler {
 			final PoseStack poseStack = event.getPoseStack();
 			final EntityDimensions dimensions = livingEntity.getDimensions(livingEntity.getPose());
 			final MultiBufferSource multiBufferSource = event.getMultiBufferSource();
+			final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
+			final double nameOffset = getNameOffset(renderDispatcher, livingEntity);
 
-			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, mc.getEntityRenderDispatcher(),
-					dimensions.height, bubbleAlpha, event.getPackedLight());
+			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
+					dimensions.height, bubbleAlpha, event.getPackedLight(), nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removeBubble(bubble);
 			}
 		}
+	}
+
+	public double getNameOffset(EntityRenderDispatcher renderDispatcher, LivingEntity livingEntity) {
+		double nameOffset = 0.0D;
+		if (!ConfigCache.nameOffset) {
+			return nameOffset;
+		}
+
+		boolean flag = livingEntity.shouldShowName() || (livingEntity == renderDispatcher.crosshairPickEntity && livingEntity.hasCustomName());
+		if (flag) {
+			nameOffset += (livingEntity.getBbHeight() + 0.5F) * 0.3125D;
+		}
+
+		return nameOffset;
 	}
 
 	@SubscribeEvent
@@ -87,9 +104,11 @@ public class ClientHandler {
 			final PoseStack poseStack = event.getPoseStack();
 			final EntityDimensions dimensions = player.getDimensions(player.getPose());
 			final MultiBufferSource multiBufferSource = event.getMultiBufferSource();
+			final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
+			final double nameOffset = getNameOffset(renderDispatcher, player);
 
-			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, mc.getEntityRenderDispatcher(),
-					dimensions.height, bubbleAlpha, event.getPackedLight());
+			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
+					dimensions.height, bubbleAlpha, event.getPackedLight(), nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removePlayerBubble(bubble);
