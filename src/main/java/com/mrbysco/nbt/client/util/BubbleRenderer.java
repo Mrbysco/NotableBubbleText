@@ -23,7 +23,8 @@ public class BubbleRenderer {
 	private static final ResourceLocation BUBBLE_TEXTURE = new ResourceLocation(NotableBubbleText.MOD_ID, "textures/block/bubble.png");
 
 	public static void renderBubbleText(BubbleText bubble, PoseStack poseStack, Font font, MultiBufferSource buffer,
-										EntityRenderDispatcher renderDispatcher, float entityHeight, float alpha, int light) {
+										EntityRenderDispatcher renderDispatcher, float entityHeight, float alpha,
+										int light, double nameOffset) {
 
 		String text = bubble.text();
 		MutableComponent component = Component.literal(text).withStyle(ChatFormatting.BLACK);
@@ -37,8 +38,8 @@ public class BubbleRenderer {
 		poseStack.pushPose();
 		Matrix4f pose = poseStack.last().pose();
 
-		poseStack.translate(0.0D, entityHeight + (ConfigCache.bubbleOffset), 0.0D);
-		if(sequences.size() > 1)
+		poseStack.translate(0.0D, entityHeight + (ConfigCache.bubbleOffset + nameOffset), 0.D);
+		if (sequences.size() > 1)
 			poseStack.translate(0.0D, (0.1F * sequences.size()), 0.0D);
 		poseStack.mulPose(renderDispatcher.cameraOrientation());
 		poseStack.scale(-0.025F, -0.025F, -0.025F);
@@ -50,6 +51,7 @@ public class BubbleRenderer {
 			source.endBatch(bubbleType);
 		}
 
+		poseStack.translate(0.0D, 0.0D, 0.01D);
 		for (int i = 0; i < sequences.size(); i++) {
 			FormattedCharSequence sequence = sequences.get(i);
 			float offset = 0;
