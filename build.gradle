@@ -97,12 +97,12 @@ repositories {
 	maven {
         url = "https://maven.blamejared.com"
 	}
-    maven {
-        url "https://cursemaven.com"
-        content {
-            includeGroup "curse.maven"
-        }
-    }
+//    maven {
+//        url "https://cursemaven.com"
+//        content {
+//            includeGroup "curse.maven"
+//        }
+//    }
 }
 
 dependencies {
@@ -113,7 +113,7 @@ dependencies {
 
     runtimeOnly fg.deobf("mezz.jei:jei-${mc_version}-forge:${jei_version}")
 
-    runtimeOnly fg.deobf("curse.maven:emojiful-284324:4787476")
+//    runtimeOnly fg.deobf("curse.maven:emojiful-284324:4787476")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
