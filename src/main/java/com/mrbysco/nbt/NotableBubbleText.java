@@ -9,6 +9,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
@@ -33,6 +34,9 @@ public class NotableBubbleText {
 
 		if (FMLEnvironment.dist == Dist.CLIENT) {
 			MinecraftForge.EVENT_BUS.register(new ClientHandler());
+			if (ModList.get().isLoaded("geckolib")) {
+				MinecraftForge.EVENT_BUS.register(new com.mrbysco.nbt.client.compat.GeckoCompat());
+			}
 		}
 	}
 

@@ -64,7 +64,7 @@ public class ClientHandler {
 		}
 	}
 
-	public double getNameOffset(EntityRenderDispatcher renderDispatcher, LivingEntity livingEntity) {
+	public static double getNameOffset(EntityRenderDispatcher renderDispatcher, LivingEntity livingEntity) {
 		double nameOffset = 0.0D;
 		if (!ConfigCache.nameOffset) {
 			return nameOffset;
