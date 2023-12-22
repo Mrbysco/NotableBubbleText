@@ -1,1 +1,1 @@
-* Add support for GeckoLib
+* Change what part of the chat message shows up in bubble text
