@@ -134,6 +134,12 @@ public class ClientHandler {
 		if (player.blockPosition().distManhattan(senderPlayer.blockPosition()) < 2000 || player.level().dimension().location().equals(senderPlayer.level().dimension().location())) {
 			String senderName = senderPlayer.getGameProfile().getName();
 			String messageText = message.getString();
+			List<Component> siblings = message.getSiblings();
+			if (!siblings.isEmpty()) {
+				String lastText = siblings.get(siblings.size() - 1).getString();
+				if (!lastText.isEmpty())
+					messageText = lastText;
+			}
 			if (!BubbleHandler.addPlayerBubble(sender, new BubbleText(senderName, messageText, sender, level.getGameTime()))) {
 				NotableBubbleText.LOGGER.error("Failed to add player bubble for {}", senderName);
 			}
