@@ -125,6 +125,9 @@ dependencies {
     implementation fg.deobf('software.bernie.geckolib:geckolib-forge-1.20.1:4.3.1')
 
     runtimeOnly fg.deobf("curse.maven:emojiful-284324:4672310")
+
+//    runtimeOnly fg.deobf("curse.maven:collective-342584:4973655")
+//    runtimeOnly fg.deobf("curse.maven:beautified-chat-client-514797:4965410")
 }
 
 // Example for how to get properties into the manifest for reading at runtime.
