@@ -10,8 +10,6 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.neoforged.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -22,13 +20,12 @@ public class NotableBubbleText {
 	public static final String MOD_ID = "nbt";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public NotableBubbleText() {
-		IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
+	public NotableBubbleText(IEventBus eventBus) {
 		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BubbleConfig.clientSpec, "notablebubbletext-client.toml");
 		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BubbleConfig.commonSpec, "notablebubbletext-common.toml");
 		eventBus.register(BubbleConfig.class);
 
-		eventBus.addListener(this::commonSetup);
+		eventBus.addListener(PacketHandler::setupPackets);
 		NeoForge.EVENT_BUS.addListener(this::onCommandRegister);
 
 		if (FMLEnvironment.dist.isClient()) {
@@ -41,9 +38,5 @@ public class NotableBubbleText {
 
 	public void onCommandRegister(RegisterCommandsEvent event) {
 		BubbleCommands.initializeCommands(event.getDispatcher());
-	}
-
-	public void commonSetup(FMLCommonSetupEvent event) {
-		PacketHandler.init();
 	}
 }

@@ -1,23 +1,17 @@
 package com.mrbysco.nbt.network;
 
 import com.mrbysco.nbt.NotableBubbleText;
-import com.mrbysco.nbt.network.message.AddBubbleMessage;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.network.NetworkRegistry;
-import net.neoforged.neoforge.network.simple.SimpleChannel;
+import com.mrbysco.nbt.network.handler.ClientPayloadHandler;
+import com.mrbysco.nbt.network.message.AddBubblePayload;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlerEvent;
+import net.neoforged.neoforge.network.registration.IPayloadRegistrar;
 
 public class PacketHandler {
-	private static final String PROTOCOL_VERSION = "1";
-	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
-			new ResourceLocation(NotableBubbleText.MOD_ID, "main"),
-			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
-	);
 
-	private static int id = 0;
+	public static void setupPackets(final RegisterPayloadHandlerEvent event) {
+		final IPayloadRegistrar registrar = event.registrar(NotableBubbleText.MOD_ID).optional();
 
-	public static void init() {
-		CHANNEL.registerMessage(id++, AddBubbleMessage.class, AddBubbleMessage::encode, AddBubbleMessage::decode, AddBubbleMessage::handle);
+		registrar.play(AddBubblePayload.ID, AddBubblePayload::new, handler -> handler
+				.client(ClientPayloadHandler.getInstance()::handleData));
 	}
 }

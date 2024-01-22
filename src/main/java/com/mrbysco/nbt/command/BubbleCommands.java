@@ -6,15 +6,13 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.config.BubbleConfig;
-import com.mrbysco.nbt.network.PacketHandler;
-import com.mrbysco.nbt.network.message.AddBubbleMessage;
+import com.mrbysco.nbt.network.message.AddBubblePayload;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.MessageArgument;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
-import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,7 +65,7 @@ public class BubbleCommands {
 				if (uuid == null) {
 					NotableBubbleText.LOGGER.debug("Ignoring bubble for {} because no entity was found", player.getName().getString());
 				} else {
-					PacketHandler.CHANNEL.send(PacketDistributor.PLAYER.with(() -> player), new AddBubbleMessage(uuid, author, finalText));
+					player.connection.send(new AddBubblePayload(uuid, author, finalText));
 				}
 			}
 		});
