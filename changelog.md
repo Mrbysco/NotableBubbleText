@@ -1,1 +1,1 @@
-* Change what part of the chat message shows up in bubble text
+* Initial update to 1.20.2 (NeoForge)
