@@ -2,20 +2,20 @@ package com.mrbysco.nbt.config;
 
 import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.ConfigCache;
-import net.minecraftforge.common.ForgeConfigSpec;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.config.ModConfig;
-import net.minecraftforge.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.fml.event.config.ModConfigEvent;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BubbleConfig {
 	public static class Client {
-		public final ForgeConfigSpec.IntValue maxTextWidth;
-		public final ForgeConfigSpec.DoubleValue yOffset;
-		public final ForgeConfigSpec.BooleanValue playerBubbles;
-		public final ForgeConfigSpec.BooleanValue nameOffset;
+		public final ModConfigSpec.IntValue maxTextWidth;
+		public final ModConfigSpec.DoubleValue yOffset;
+		public final ModConfigSpec.BooleanValue playerBubbles;
+		public final ModConfigSpec.BooleanValue nameOffset;
 
-		Client(ForgeConfigSpec.Builder builder) {
+		Client(ModConfigSpec.Builder builder) {
 			builder.comment("General settings")
 					.push("General");
 
@@ -39,19 +39,19 @@ public class BubbleConfig {
 		}
 	}
 
-	public static final ForgeConfigSpec clientSpec;
+	public static final ModConfigSpec clientSpec;
 	public static final Client CLIENT;
 
 	static {
-		final Pair<Client, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Client::new);
+		final Pair<Client, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Client::new);
 		clientSpec = specPair.getRight();
 		CLIENT = specPair.getLeft();
 	}
 
 	public static class Common {
-		public final ForgeConfigSpec.ConfigValue<? extends String> nameKey;
+		public final ModConfigSpec.ConfigValue<? extends String> nameKey;
 
-		Common(ForgeConfigSpec.Builder builder) {
+		Common(ModConfigSpec.Builder builder) {
 			builder.comment("General settings")
 					.push("General");
 
@@ -63,11 +63,11 @@ public class BubbleConfig {
 		}
 	}
 
-	public static final ForgeConfigSpec commonSpec;
+	public static final ModConfigSpec commonSpec;
 	public static final Common COMMON;
 
 	static {
-		final Pair<Common, ForgeConfigSpec> specPair = new ForgeConfigSpec.Builder().configure(Common::new);
+		final Pair<Common, ModConfigSpec> specPair = new ModConfigSpec.Builder().configure(Common::new);
 		commonSpec = specPair.getRight();
 		COMMON = specPair.getLeft();
 	}

@@ -6,12 +6,10 @@ import com.mrbysco.nbt.command.BubbleText;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.fml.DistExecutor.SafeRunnable;
-import net.minecraftforge.network.NetworkEvent.Context;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.neoforge.network.NetworkEvent.Context;
 
-import java.io.Serial;
 import java.util.UUID;
-import java.util.function.Supplier;
 
 public class AddBubbleMessage {
 
@@ -34,24 +32,10 @@ public class AddBubbleMessage {
 		return new AddBubbleMessage(buffer.readUUID(), buffer.readUtf(), buffer.readUtf());
 	}
 
-	public void handle(Supplier<Context> context) {
-		Context ctx = context.get();
+	public void handle(Context ctx) {
 		ctx.enqueueWork(() -> {
 			if (ctx.getDirection().getReceptionSide().isClient()) {
-				AddBubble.update(this.mobUUID, this.author, this.message).run();
-			}
-		});
-		ctx.setPacketHandled(true);
-	}
-
-	private static class AddBubble {
-		private static SafeRunnable update(UUID mobUUID, String author, String message) {
-			return new SafeRunnable() {
-				@Serial
-				private static final long serialVersionUID = 1L;
-
-				@Override
-				public void run() {
+				if (FMLEnvironment.dist.isClient()) {
 					Level level = Minecraft.getInstance().level;
 					if (level == null) return;
 
@@ -59,7 +43,8 @@ public class AddBubbleMessage {
 						NotableBubbleText.LOGGER.error("Failed to add bubble for {}", author);
 					}
 				}
-			};
-		}
+			}
+		});
+		ctx.setPacketHandled(true);
 	}
 }
