@@ -1,1 +1,1 @@
-* Change what part of the chat message shows up in bubble text
+* Add config option `showUsername` that allows removing the username from the chat bubble
