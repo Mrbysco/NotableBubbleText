@@ -84,7 +84,7 @@ public class BubbleConfig {
 
 	@SubscribeEvent
 	public static void onFileChange(final ModConfigEvent.Reloading configEvent) {
-		NotableBubbleText.LOGGER.debug("MNotable Bubble Text's config just got changed on the file system!");
+		NotableBubbleText.LOGGER.debug("Notable Bubble Text's config just got changed on the file system!");
 	}
 
 	@SubscribeEvent
