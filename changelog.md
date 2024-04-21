@@ -1,1 +1,1 @@
-* Initial update to 1.20.4
+* Add config option `showUsername` that allows removing the username from the chat bubble
