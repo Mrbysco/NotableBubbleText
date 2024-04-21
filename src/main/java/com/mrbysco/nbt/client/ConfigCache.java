@@ -6,6 +6,7 @@ public class ConfigCache {
 	public static boolean nameOffset = false;
 	public static double bubbleOffset = 0.5D;
 	public static int maxTextWidth = 200;
+	public static boolean showUsername = false;
 
 	public static void setRenderPlayerBubbles(boolean renderPlayerBubbles) {
 		ConfigCache.renderPlayerBubbles = renderPlayerBubbles;
@@ -21,5 +22,9 @@ public class ConfigCache {
 
 	public static void setMaxTextWidth(int maxWidth) {
 		ConfigCache.maxTextWidth = maxWidth;
+	}
+
+	public static void setShowUsername(boolean showUsername) {
+		ConfigCache.showUsername = showUsername;
 	}
 }
