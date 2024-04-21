@@ -10,6 +10,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.contents.TranslatableContents;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +21,7 @@ import net.neoforged.neoforge.client.event.RenderPlayerEvent;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -127,6 +129,7 @@ public class ClientHandler {
 		final Player player = mc.player;
 		if (player == null) return;
 		final Level level = mc.level;
+		if (level == null) return;
 
 		Player senderPlayer = level.getPlayerByUUID(sender);
 		if (senderPlayer == null) return;
@@ -139,6 +142,24 @@ public class ClientHandler {
 				String lastText = siblings.get(siblings.size() - 1).getString();
 				if (!lastText.isEmpty())
 					messageText = lastText;
+			}
+
+			boolean showUsername = ConfigCache.showUsername;
+			if (!showUsername && message.getContents() instanceof TranslatableContents translatableContents) {
+				final Object[] args = translatableContents.getArgs();
+				if (args.length > 1) {
+					final Object[] adjustedArgs = Arrays.copyOfRange(args, 1, args.length);
+					StringBuilder justTheMessage = new StringBuilder();
+					for (Object adjustedArg : adjustedArgs) {
+						if (adjustedArg instanceof Component component) {
+							justTheMessage.append(component.getString());
+						}
+						if (adjustedArg instanceof String str) {
+							justTheMessage.append(str);
+						}
+					}
+					messageText = justTheMessage.toString();
+				}
 			}
 			if (!BubbleHandler.addPlayerBubble(sender, new BubbleText(senderName, messageText, sender, level.getGameTime()))) {
 				NotableBubbleText.LOGGER.error("Failed to add player bubble for {}", senderName);

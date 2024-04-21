@@ -14,6 +14,7 @@ public class BubbleConfig {
 		public final ModConfigSpec.DoubleValue yOffset;
 		public final ModConfigSpec.BooleanValue playerBubbles;
 		public final ModConfigSpec.BooleanValue nameOffset;
+		public final ModConfigSpec.BooleanValue showUsername;
 
 		Client(ModConfigSpec.Builder builder) {
 			builder.comment("General settings")
@@ -34,6 +35,10 @@ public class BubbleConfig {
 			nameOffset = builder
 					.comment("Offset the bubble text if the entity's name is rendered above their head")
 					.define("nameOffset", true);
+
+			showUsername = builder
+					.comment("Show the username of the player who sent the message in the bubble")
+					.define("showUsername", true);
 
 			builder.pop();
 		}
@@ -94,6 +99,7 @@ public class BubbleConfig {
 			ConfigCache.setNameOffset(BubbleConfig.CLIENT.nameOffset.get());
 			ConfigCache.setMaxTextWidth(BubbleConfig.CLIENT.maxTextWidth.get());
 			ConfigCache.setBubbleOffset(BubbleConfig.CLIENT.yOffset.get());
+			ConfigCache.setShowUsername(BubbleConfig.CLIENT.showUsername.get());
 		}
 	}
 }
