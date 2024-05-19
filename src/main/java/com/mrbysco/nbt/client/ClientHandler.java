@@ -58,7 +58,7 @@ public class ClientHandler {
 			final double nameOffset = getNameOffset(renderDispatcher, livingEntity);
 
 			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
-					dimensions.height, bubbleAlpha, event.getPackedLight(), nameOffset);
+					dimensions.height + 0.5F, bubbleAlpha, event.getPackedLight(), nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removeBubble(bubble);
