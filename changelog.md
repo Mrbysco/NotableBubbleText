@@ -1,1 +1,1 @@
-* Initial 1.18 version
+* Make the mod optional on server-side
