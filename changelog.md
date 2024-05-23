@@ -1,1 +1,1 @@
-* Add config option `showUsername` that allows removing the username from the chat bubble
+* Make server-side optional
