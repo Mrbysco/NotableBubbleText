@@ -11,8 +11,8 @@ public class PacketHandler {
 	public static final SimpleChannel CHANNEL = NetworkRegistry.newSimpleChannel(
 			new ResourceLocation(NotableBubbleText.MOD_ID, "main"),
 			() -> PROTOCOL_VERSION,
-			PROTOCOL_VERSION::equals,
-			PROTOCOL_VERSION::equals
+			 NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION),
+			 NetworkRegistry.acceptMissingOr(PROTOCOL_VERSION)
 	);
 
 	private static int id = 0;
