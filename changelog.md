@@ -1,1 +1,1 @@
-* Backport `showUsername` config option 
+* Make server-side optional
