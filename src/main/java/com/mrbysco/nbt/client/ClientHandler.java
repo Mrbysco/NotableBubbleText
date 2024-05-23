@@ -11,10 +11,12 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
+import net.minecraft.world.entity.EntityAttachment;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.ClientChatReceivedEvent;
@@ -29,6 +31,7 @@ public class ClientHandler {
 
 	@SubscribeEvent
 	public <T extends LivingEntity> void onEntityRender(RenderLivingEvent.Post<T, ? extends EntityModel<T>> event) {
+		final float partialTick = event.getPartialTick();
 		final Minecraft mc = Minecraft.getInstance();
 		final Player localPlayer = mc.player;
 		if (localPlayer == null) return;
@@ -55,10 +58,10 @@ public class ClientHandler {
 			final EntityDimensions dimensions = livingEntity.getDimensions(livingEntity.getPose());
 			final MultiBufferSource multiBufferSource = event.getMultiBufferSource();
 			final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
-			final double nameOffset = getNameOffset(renderDispatcher, livingEntity);
+			final double nameOffset = getNameOffset(renderDispatcher, livingEntity, partialTick);
 
 			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
-					dimensions.height, bubbleAlpha, event.getPackedLight(), nameOffset);
+					dimensions.height(), bubbleAlpha, event.getPackedLight(), nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removeBubble(bubble);
@@ -66,15 +69,18 @@ public class ClientHandler {
 		}
 	}
 
-	public static double getNameOffset(EntityRenderDispatcher renderDispatcher, LivingEntity livingEntity) {
+	public static double getNameOffset(EntityRenderDispatcher renderDispatcher, LivingEntity livingEntity, float partialTick) {
 		double nameOffset = 0.0D;
 		if (!ConfigCache.nameOffset) {
 			return nameOffset;
 		}
 
 		boolean flag = livingEntity.shouldShowName() || (livingEntity == renderDispatcher.crosshairPickEntity && livingEntity.hasCustomName());
-		if (flag) {
-			nameOffset += livingEntity.getNameTagOffsetY() * 0.3125D;
+		if (!flag) return nameOffset;
+
+		Vec3 vec3 = livingEntity.getAttachments().getNullable(EntityAttachment.NAME_TAG, 0, livingEntity.getViewYRot(partialTick));
+		if (flag && vec3 != null) {
+			nameOffset += vec3.y * 0.3125D;
 		}
 
 		return nameOffset;
@@ -89,6 +95,7 @@ public class ClientHandler {
 
 		final Player player = event.getEntity();
 		if (player.isInvisibleTo(localPlayer)) return;
+		final float partialTick = event.getPartialTick();
 
 		List<BubbleText> bubbles = BubbleHandler.getPlayerBubbles(player.getUUID());
 		if (!bubbles.isEmpty()) {
@@ -107,10 +114,10 @@ public class ClientHandler {
 			final EntityDimensions dimensions = player.getDimensions(player.getPose());
 			final MultiBufferSource multiBufferSource = event.getMultiBufferSource();
 			final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
-			final double nameOffset = getNameOffset(renderDispatcher, player);
+			final double nameOffset = getNameOffset(renderDispatcher, player, partialTick);
 
 			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
-					dimensions.height, bubbleAlpha, event.getPackedLight(), nameOffset);
+					dimensions.height(), bubbleAlpha, event.getPackedLight(), nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removePlayerBubble(bubble);

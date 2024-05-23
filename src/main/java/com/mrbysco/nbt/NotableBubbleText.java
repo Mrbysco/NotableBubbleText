@@ -5,7 +5,9 @@ import com.mrbysco.nbt.client.ClientHandler;
 import com.mrbysco.nbt.command.BubbleCommands;
 import com.mrbysco.nbt.config.BubbleConfig;
 import com.mrbysco.nbt.network.PacketHandler;
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.fml.common.Mod;
@@ -20,15 +22,15 @@ public class NotableBubbleText {
 	public static final String MOD_ID = "nbt";
 	public static final Logger LOGGER = LogUtils.getLogger();
 
-	public NotableBubbleText(IEventBus eventBus) {
-		ModLoadingContext.get().registerConfig(ModConfig.Type.CLIENT, BubbleConfig.clientSpec, "notablebubbletext-client.toml");
-		ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, BubbleConfig.commonSpec, "notablebubbletext-common.toml");
+	public NotableBubbleText(IEventBus eventBus, Dist dist, ModContainer container) {
+		container.registerConfig(ModConfig.Type.COMMON, BubbleConfig.commonSpec, "notablebubbletext-common.toml");
 		eventBus.register(BubbleConfig.class);
 
 		eventBus.addListener(PacketHandler::setupPackets);
 		NeoForge.EVENT_BUS.addListener(this::onCommandRegister);
 
-		if (FMLEnvironment.dist.isClient()) {
+		if (dist.isClient()) {
+			container.registerConfig(ModConfig.Type.CLIENT, BubbleConfig.clientSpec, "notablebubbletext-client.toml");
 			NeoForge.EVENT_BUS.register(new ClientHandler());
 			if (ModList.get().isLoaded("geckolib")) {
 				NeoForge.EVENT_BUS.register(new com.mrbysco.nbt.client.compat.GeckoCompat());

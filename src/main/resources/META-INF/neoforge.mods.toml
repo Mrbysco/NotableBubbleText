@@ -1,5 +1,5 @@
 modLoader="javafml"
-loaderVersion="[2,)"
+loaderVersion="[3,)"
 issueTrackerURL="https://github.com/Mrbysco/NotableBubbleText/issues"
 license="MIT"
 
@@ -15,6 +15,6 @@ I'm going to bubble your text and there's nothing you can do about it.
 [[dependencies.nbt]]
 modId="minecraft"
 type="REQUIRED"
-versionRange="[1.20.4,1.21)"
+versionRange="[1.20.6,1.21)"
 ordering="NONE"
 side="BOTH"

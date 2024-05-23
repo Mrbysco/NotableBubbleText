@@ -48,10 +48,11 @@ public class GeckoCompat {
 				final EntityDimensions dimensions = livingEntity.getDimensions(livingEntity.getPose());
 				final MultiBufferSource multiBufferSource = event.getBufferSource();
 				final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
-				final double nameOffset = ClientHandler.getNameOffset(renderDispatcher, livingEntity);
+				final float partialTick = event.getPartialTick();
+				final double nameOffset = ClientHandler.getNameOffset(renderDispatcher, livingEntity, partialTick);
 
 				BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
-						dimensions.height, bubbleAlpha, event.getPackedLight(), nameOffset);
+						dimensions.height(), bubbleAlpha, event.getPackedLight(), nameOffset);
 
 				if (bubbleAge > bubbleTime) {
 					BubbleHandler.removeBubble(bubble);

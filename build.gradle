@@ -10,20 +10,19 @@ plugins {
 
 version = "${version}"
 group = "${mod_group}"
-
 base {
     archivesName = "${mod_archive_name}-${mc_version}"
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+// Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 //minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
 //minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
 
 runs {
     // applies to all the run configs below
-    configureEach {
+    configureEach { net.neoforged.gradle.dsl.common.runs.run.Run run ->
         // Recommended logging data for a userdev environment
         systemProperty 'forge.logging.markers', 'REGISTRIES'
 
@@ -32,6 +31,10 @@ runs {
 
         //Limit ram usage for the dev environment to 4GB
         jvmArgument '-Xmx4G'
+
+        if (run.project.javaToolchains.launcherFor(java.toolchain).map { it.metadata.vendor }.getOrElse("").contains("JetBrains")) {
+            run.jvmArgument("-XX:+AllowEnhancedClassRedefinition")
+        }
 
         modSource project.sourceSets.main
     }
@@ -62,12 +65,14 @@ repositories {
     maven {
         url = "https://maven.blamejared.com"
     }
-    maven {
-        name = 'GeckoLib'
-        url 'https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/'
-        content {
-            includeGroupByRegex("software\\.bernie.*")
-            includeGroup("com.eliotlash.mclib")
+    exclusiveContent {
+        forRepository {
+            maven {
+                url "https://cursemaven.com"
+            }
+        }
+        filter {
+            includeGroup "curse.maven"
         }
     }
 }
@@ -75,11 +80,12 @@ repositories {
 dependencies {
     implementation "net.neoforged:neoforge:${neo_version}"
 
-    implementation "software.bernie.geckolib:geckolib-neoforge-1.20.4:4.4.1"
 //    compileOnly "mezz.jei:jei-${mc_version}-common-api:${jei_version}"
-//    compileOnly "mezz.jei:jei-${mc_version}-forge-api:${jei_version}"
-//
-//    runtimeOnly "mezz.jei:jei-${mc_version}-forge:${jei_version}"
+//    compileOnly "mezz.jei:jei-${mc_version}-neoforge-api:${jei_version}"
+
+//    localRuntime "mezz.jei:jei-${mc_version}-neoforge:${jei_version}"
+
+    implementation "curse.maven:geckolib-388172:5363769"
 }
 
 jar {
@@ -126,12 +132,14 @@ if (System.getenv().CURSEFORGE_KEY) {
         mainFile.releaseType = 'beta'
         mainFile.addGameVersion "NeoForge"
         mainFile.addGameVersion "${mc_version}"
-        mainFile.addGameVersion "Java 17"
+        mainFile.addGameVersion "Java 21"
+        mainFile.addGameVersion('Server', 'Client')
 
         mainFile.changelog = file("$project.rootDir/changelog.md")
         mainFile.changelogType = 'markdown'
 
-        mainFile.addOptional("geckolib")
+//        mainFile.addRequirement()
+//        mainFile.addOptional()
     }
 }
 
@@ -146,13 +154,13 @@ if (System.getenv().MODRINTH_KEY) {
         changelog = file("$project.rootDir/changelog.md").text
         gameVersions = ["${mc_version}"]
         loaders = ["neoforge"]
-
-        dependencies {
-            optional.project "geckolib"
-        }
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
+// IDEA no longer automatically downloads sources/javadoc jars for dependencies, so we need to explicitly enable the behavior.
+idea {
+    module {
+        downloadSources = true
+        downloadJavadoc = true
+    }
 }

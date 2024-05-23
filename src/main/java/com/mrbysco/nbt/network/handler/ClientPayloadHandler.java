@@ -7,7 +7,7 @@ import com.mrbysco.nbt.network.message.AddBubblePayload;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.Level;
-import net.neoforged.neoforge.network.handling.PlayPayloadContext;
+import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
@@ -18,8 +18,8 @@ public class ClientPayloadHandler {
 		return INSTANCE;
 	}
 
-	public void handleData(final AddBubblePayload data, final PlayPayloadContext context) {
-		context.workHandler().submitAsync(() -> {
+	public void handleData(final AddBubblePayload data, final IPayloadContext context) {
+		context.enqueueWork(() -> {
 					Level level = Minecraft.getInstance().level;
 					if (level == null) return;
 
@@ -32,7 +32,7 @@ public class ClientPayloadHandler {
 				})
 				.exceptionally(e -> {
 					// Handle exception
-					context.packetHandler().disconnect(Component.translatable("nbt.networking.add_bubble.failed", e.getMessage()));
+					context.disconnect(Component.translatable("nbt.networking.add_bubble.failed", e.getMessage()));
 					return null;
 				});
 	}
