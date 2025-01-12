@@ -1,0 +1,20 @@
+{
+  "nbt.networking.add_bubble.failed": "Baloncuk eklenemedi {}",
+  "nbt.configuration.general": "Genel",
+  "nbt.configuration.general.tooltip": "Genel Ayarlar",
+  "nbt.configuration.nameKey": "Ad Anahtarı",
+  "nbt.configuration.nameKey.tooltip": "Baloncuk sahiplerinin adını varlığın kalıcı verilerinde saklamak için kullanılan anahtarın adı",
+  "nbt.configuration.client": "İstemci",
+  "nbt.configuration.client.tooltip": "İstemci Ayarları",
+  "nbt.configuration.YOffset": "Y Ofseti",
+  "nbt.configuration.YOffset.tooltip": "Baloncuğun oluşturulduğu varlığın başının üzerindeki ofset",
+  "nbt.configuration.maxTextWidth": "Maks Metin Genişliği",
+  "nbt.configuration.maxTextWidth.tooltip": "Baloncuk metninin yeni bir satıra geçmeden önceki maksimum genişliği",
+  "nbt.configuration.nameOffset": "Ad Ofseti",
+  "nbt.configuration.nameOffset.tooltip": "Varlığın adı başının üzerinde işleniyorsa baloncuk metninin ofsetini ayarla",
+  "nbt.configuration.playerBubbles": "Oyuncu Baloncukları",
+  "nbt.configuration.playerBubbles.tooltip": "Sohbet mesajlarını oyuncuların başlarının üzerinde bir baloncuk içinde oluşturulması",
+  "nbt.configuration.showUsername": "Kullanıcı Adını Göster",
+  "nbt.configuration.showUsername.tooltip": "Mesajı gönderen oyuncunun kullanıcı adını baloncuk içinde göster",
+  "nbt.configuration.title": "Notable Bubble Text yapılandırması"
+}
