@@ -1,2 +1,1 @@
-* Fix bubble rendering
-* Enable in-game configuration screen
+* Fix client class being loaded when loaded on a server
