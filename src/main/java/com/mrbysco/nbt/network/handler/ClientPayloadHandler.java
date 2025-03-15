@@ -4,8 +4,8 @@ import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.BubbleHandler;
 import com.mrbysco.nbt.command.BubbleText;
 import com.mrbysco.nbt.network.message.AddBubblePayload;
-import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -20,7 +20,9 @@ public class ClientPayloadHandler {
 
 	public void handleData(final AddBubblePayload data, final IPayloadContext context) {
 		context.enqueueWork(() -> {
-					Level level = Minecraft.getInstance().level;
+					Player player = context.player();
+					if (player == null) return;
+					Level level = player.level();
 					if (level == null) return;
 
 					String author = data.author();
