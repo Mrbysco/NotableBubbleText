@@ -1,1 +1,1 @@
-* Fix client class being loaded when loaded on a server
+* Update to 1.21.4
