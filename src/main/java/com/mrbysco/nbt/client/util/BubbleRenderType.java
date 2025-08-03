@@ -7,6 +7,7 @@ import com.mrbysco.nbt.NotableBubbleText;
 import net.minecraft.client.renderer.RenderStateShard;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.TriState;
 import net.neoforged.neoforge.client.event.RegisterRenderBuffersEvent;
 
 public class BubbleRenderType extends RenderType {
@@ -19,7 +20,7 @@ public class BubbleRenderType extends RenderType {
 			DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256,
 			false, false,
 			CompositeState.builder()
-					.setTextureState(new RenderStateShard.TextureStateShard(BUBBLE_TEXTURE, false, false))
+					.setTextureState(new RenderStateShard.TextureStateShard(BUBBLE_TEXTURE, TriState.FALSE, false))
 					.setShaderState(POSITION_COLOR_TEX_LIGHTMAP_SHADER)
 					.setTransparencyState(NO_TRANSPARENCY)
 //						.setWriteMaskState(COLOR_WRITE)

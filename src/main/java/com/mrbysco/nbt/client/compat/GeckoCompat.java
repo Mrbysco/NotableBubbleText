@@ -9,6 +9,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -26,7 +27,7 @@ public class GeckoCompat {
 		final Player localPlayer = mc.player;
 		if (localPlayer == null) return;
 
-		if (event.getEntity() instanceof LivingEntity livingEntity) {
+		if (event.getEntity() instanceof LivingEntity livingEntity && event.getRenderer().getEntityRenderState() instanceof LivingEntityRenderState livingEntityRenderState) {
 			if (livingEntity.isInvisibleTo(localPlayer)) return;
 
 			String author = BubbleHandler.getAuthor(livingEntity.getUUID());
@@ -48,8 +49,7 @@ public class GeckoCompat {
 				final EntityDimensions dimensions = livingEntity.getDimensions(livingEntity.getPose());
 				final MultiBufferSource multiBufferSource = event.getBufferSource();
 				final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
-				final float partialTick = event.getPartialTick();
-				final double nameOffset = ClientHandler.getNameOffset(renderDispatcher, livingEntity, partialTick);
+				final double nameOffset = ClientHandler.getNameOffset(livingEntityRenderState);
 
 				BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
 						dimensions.height(), bubbleAlpha, event.getPackedLight(), nameOffset);

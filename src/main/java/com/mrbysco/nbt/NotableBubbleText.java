@@ -35,6 +35,7 @@ public class NotableBubbleText {
 			container.registerExtensionPoint(IConfigScreenFactory.class, ConfigurationScreen::new);
 			NeoForge.EVENT_BUS.register(new ClientHandler());
 			eventBus.addListener(BubbleRenderType::onRegisterRenderTypes);
+			eventBus.addListener(ClientHandler::registerCustomRenderData);
 			if (ModList.get().isLoaded("geckolib")) {
 				NeoForge.EVENT_BUS.register(new com.mrbysco.nbt.client.compat.GeckoCompat());
 			}

@@ -49,7 +49,7 @@ runs {
         programArgument '--nogui'
     }
 
-    data {
+    clientData {
         // example of overriding the workingDirectory set in configureEach above, uncomment if you want to use it
         // workingDirectory project.file('run-data')
 
@@ -73,6 +73,12 @@ repositories {
     maven {
         url = "https://maven.blamejared.com"
     }
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    }
 }
 
 dependencies {
@@ -83,8 +89,8 @@ dependencies {
 
     localRuntime "mezz.jei:jei-${jei_minecraft}-neoforge:${jei_version}"
 
-    compileOnly "curse.maven:geckolib-388172:5874016"
-    localRuntime "curse.maven:geckolib-388172:5874016"
+    compileOnly "curse.maven:geckolib-388172:6622742"
+    localRuntime "curse.maven:geckolib-388172:6622742"
 }
 
 jar {
