@@ -15,7 +15,7 @@ public class BubbleRenderType extends RenderType {
 	}
 	private static final ResourceLocation BUBBLE_TEXTURE = ResourceLocation.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "textures/block/bubble.png");
 
-	public static RenderType BUBBLE = create("nbt:bubble",
+	public static final RenderType BUBBLE = create("nbt:bubble",
 			DefaultVertexFormat.POSITION_COLOR_TEX_LIGHTMAP, VertexFormat.Mode.QUADS, 256,
 			false, false,
 			CompositeState.builder()
