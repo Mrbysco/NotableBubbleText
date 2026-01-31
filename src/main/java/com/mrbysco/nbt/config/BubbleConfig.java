@@ -2,10 +2,10 @@ package com.mrbysco.nbt.config;
 
 import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.ConfigCache;
-import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.fml.event.config.ModConfigEvent;
+import net.neoforged.neoforge.common.ModConfigSpec;
 import org.apache.commons.lang3.tuple.Pair;
 
 public class BubbleConfig {
