@@ -22,7 +22,7 @@ public class BubbleCommands {
 	public static void initializeCommands(CommandDispatcher<CommandSourceStack> dispatcher) {
 		final LiteralArgumentBuilder<CommandSourceStack> root = Commands.literal("bubbletext");
 
-		root.requires((source) -> source.hasPermission(2))
+		root.requires(Commands.hasPermission(Commands.LEVEL_GAMEMASTERS))
 				.then(Commands.argument("author", StringArgumentType.word())
 						.then(Commands.argument("text", MessageArgument.message())
 								.executes(BubbleCommands::addBubble)
@@ -51,7 +51,7 @@ public class BubbleCommands {
 			List<Entity> entityList = new ArrayList<>();
 			level.getAllEntities().forEach(entityList::add);
 			entityList.removeIf(entity ->
-					!entity.getPersistentData().contains(bubbleKey) || !entity.getPersistentData().getString(bubbleKey).equals(author));
+					!entity.getPersistentData().contains(bubbleKey) || !entity.getPersistentData().getStringOr(bubbleKey, "").equals(author));
 
 			for (ServerPlayer player : playerList) {
 				UUID uuid = null;

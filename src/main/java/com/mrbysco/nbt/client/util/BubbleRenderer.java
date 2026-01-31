@@ -2,23 +2,26 @@ package com.mrbysco.nbt.client.util;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.ConfigCache;
 import com.mrbysco.nbt.command.BubbleText;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FormattedCharSequence;
+import net.neoforged.neoforge.client.NeoForgeRenderTypes;
 import org.joml.Matrix4f;
 
 import java.util.List;
 
 public class BubbleRenderer {
 
-	public static void renderBubbleText(BubbleText bubble, PoseStack poseStack, Font font, MultiBufferSource buffer,
+	public static void renderBubbleText(BubbleText bubble, PoseStack poseStack, Font font, SubmitNodeCollector nodeCollector,
 	                                    EntityRenderDispatcher renderDispatcher, float entityHeight, float alpha,
 	                                    int light, double nameOffset) {
 
@@ -37,14 +40,14 @@ public class BubbleRenderer {
 		poseStack.translate(0.0D, entityHeight + (ConfigCache.bubbleOffset + nameOffset), 0.D);
 		if (sequences.size() > 1)
 			poseStack.translate(0.0D, (0.1F * sequences.size()), 0.0D);
-		poseStack.mulPose(renderDispatcher.cameraOrientation());
+		poseStack.mulPose(renderDispatcher.camera.rotation());
 		poseStack.scale(0.025F, -0.025F, 0.025F);
 
-		VertexConsumer bubbleBuffer = buffer.getBuffer(BubbleRenderType.BUBBLE);
-		renderBubble(poseStack, pose, bubbleBuffer, textWidth, textHeight, alpha, light);
-		if (buffer instanceof MultiBufferSource.BufferSource source) {
-			source.endBatch(BubbleRenderType.BUBBLE);
-		}
+		int finalTextWidth = textWidth;
+		Identifier texture = Identifier.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "textures/block/bubble.png");
+		nodeCollector.submitCustomGeometry(poseStack, NeoForgeRenderTypes.getTextFiltered(texture), (pose2, bubbleBuffer) -> {
+			renderBubble(poseStack, pose, bubbleBuffer, finalTextWidth, textHeight, alpha, light);
+		});
 
 		poseStack.translate(0.0D, 0.0D, 0.01D);
 		for (int i = 0; i < sequences.size(); i++) {
@@ -55,11 +58,10 @@ public class BubbleRenderer {
 				offset += (-4F * sequences.size());
 			}
 			if (sequence != null) {
-				font.drawInBatch(sequence, 0, offset, -1, false, pose,
-						buffer, Font.DisplayMode.NORMAL, 0, 15728880);
+				nodeCollector.submitText(poseStack, 0, offset, sequence, false,
+						Font.DisplayMode.POLYGON_OFFSET, light, -1, -1, -1);
 			}
 		}
-
 
 		poseStack.popPose();
 	}

@@ -5,18 +5,17 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mrbysco.nbt.NotableBubbleText;
 import com.mrbysco.nbt.client.util.BubbleRenderer;
 import com.mrbysco.nbt.command.BubbleText;
-import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.EntityModel;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderDispatcher;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
-import net.minecraft.client.renderer.entity.state.PlayerRenderState;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.contents.TranslatableContents;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
+import net.minecraft.util.Util;
 import net.minecraft.util.context.ContextKey;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.LivingEntity;
@@ -35,14 +34,12 @@ import java.util.List;
 import java.util.UUID;
 
 public class ClientHandler {
-	public static final ContextKey<UUID> UUID = new ContextKey<>(ResourceLocation.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "uuid"));
-	public static final ContextKey<EntityDimensions> DIMENSIONS = new ContextKey<>(ResourceLocation.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "dimensions"));
-	public static final ContextKey<Boolean> SHOW_NAME = new ContextKey<>(ResourceLocation.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "show_name"));
-	public static final ContextKey<Boolean> INVISIBLE = new ContextKey<>(ResourceLocation.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "invisible"));
+	public static final ContextKey<UUID> UUID = new ContextKey<>(Identifier.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "uuid"));
+	public static final ContextKey<EntityDimensions> DIMENSIONS = new ContextKey<>(Identifier.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "dimensions"));
+	public static final ContextKey<Boolean> SHOW_NAME = new ContextKey<>(Identifier.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "show_name"));
+	public static final ContextKey<Boolean> INVISIBLE = new ContextKey<>(Identifier.fromNamespaceAndPath(NotableBubbleText.MOD_ID, "invisible"));
 
 	public static void registerCustomRenderData(RegisterRenderStateModifiersEvent event) {
-
-
 		event.registerEntityModifier(new TypeToken<LivingEntityRenderer<?, ?, ?>>() {
 		                             }, (living, state) -> {
 					state.setRenderData(UUID, living.getUUID());
@@ -54,13 +51,11 @@ public class ClientHandler {
 					if (localPlayer == null) return;
 					state.setRenderData(INVISIBLE, living.isInvisibleTo(localPlayer));
 				}
-
 		);
 	}
 
 	@SubscribeEvent
 	public <T extends LivingEntity, S extends LivingEntityRenderState> void onEntityRender(RenderLivingEvent.Post<T, S, ? extends EntityModel<S>> event) {
-		final float partialTick = event.getPartialTick();
 		final Minecraft mc = Minecraft.getInstance();
 		final Player localPlayer = mc.player;
 		if (localPlayer == null) return;
@@ -86,12 +81,12 @@ public class ClientHandler {
 			final Font font = mc.font;
 			final PoseStack poseStack = event.getPoseStack();
 			final EntityDimensions dimensions = renderState.getRenderDataOrDefault(DIMENSIONS, EntityDimensions.fixed(0.0F, 0.0F));
-			final MultiBufferSource multiBufferSource = event.getMultiBufferSource();
+			final SubmitNodeCollector nodeCollector = event.getSubmitNodeCollector();
 			final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
 			final double nameOffset = getNameOffset(renderState);
 
-			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
-					dimensions.height(), bubbleAlpha, event.getPackedLight(), nameOffset);
+			BubbleRenderer.renderBubbleText(bubble, poseStack, font, nodeCollector, renderDispatcher,
+					dimensions.height(), bubbleAlpha, renderState.lightCoords, nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removeBubble(bubble);
@@ -107,7 +102,7 @@ public class ClientHandler {
 
 		boolean shouldShow = livingEntityRenderState.getRenderDataOrDefault(SHOW_NAME, false);
 
-		boolean flag = shouldShow || livingEntityRenderState.customName != null;
+		boolean flag = shouldShow || livingEntityRenderState.nameTag != null;
 		if (!flag) return nameOffset;
 
 		Vec3 vec3 = livingEntityRenderState.nameTagAttachment;
@@ -125,9 +120,8 @@ public class ClientHandler {
 		final Player localPlayer = mc.player;
 		if (localPlayer == null) return;
 
-		final PlayerRenderState renderState = event.getRenderState();
+		final LivingEntityRenderState renderState = event.getRenderState();
 		if (renderState.getRenderDataOrDefault(INVISIBLE, false)) return;
-		final float partialTick = event.getPartialTick();
 		final UUID uuid = renderState.getRenderDataOrDefault(UUID, Util.NIL_UUID);
 
 		List<BubbleText> bubbles = BubbleHandler.getPlayerBubbles(uuid);
@@ -145,12 +139,12 @@ public class ClientHandler {
 			final Font font = mc.font;
 			final PoseStack poseStack = event.getPoseStack();
 			final EntityDimensions dimensions = renderState.getRenderDataOrDefault(DIMENSIONS, EntityDimensions.fixed(0.0F, 0.0F));
-			final MultiBufferSource multiBufferSource = event.getMultiBufferSource();
+			final SubmitNodeCollector nodeCollector = event.getSubmitNodeCollector();
 			final EntityRenderDispatcher renderDispatcher = mc.getEntityRenderDispatcher();
 			final double nameOffset = getNameOffset(renderState);
 
-			BubbleRenderer.renderBubbleText(bubble, poseStack, font, multiBufferSource, renderDispatcher,
-					dimensions.height(), bubbleAlpha, event.getPackedLight(), nameOffset);
+			BubbleRenderer.renderBubbleText(bubble, poseStack, font, nodeCollector, renderDispatcher,
+					dimensions.height(), bubbleAlpha, renderState.lightCoords, nameOffset);
 
 			if (bubbleAge > bubbleTime) {
 				BubbleHandler.removePlayerBubble(bubble);
@@ -174,8 +168,9 @@ public class ClientHandler {
 		Player senderPlayer = level.getPlayerByUUID(sender);
 		if (senderPlayer == null) return;
 
-		if (player.blockPosition().distManhattan(senderPlayer.blockPosition()) < 2000 || player.level().dimension().location().equals(senderPlayer.level().dimension().location())) {
-			String senderName = senderPlayer.getGameProfile().getName();
+		if (player.blockPosition().distManhattan(senderPlayer.blockPosition()) < 2000 ||
+				player.level().dimension().identifier().equals(senderPlayer.level().dimension().identifier())) {
+			String senderName = senderPlayer.getGameProfile().name();
 			String messageText = message.getString();
 			List<Component> siblings = message.getSiblings();
 			if (!siblings.isEmpty()) {
