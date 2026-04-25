@@ -15,6 +15,6 @@ I'm going to bubble your text and there's nothing you can do about it.
 [[dependencies.nbt]]
 modId="minecraft"
 type="REQUIRED"
-versionRange="[1.21.11,1.22)"
+versionRange="[26.1.1,)"
 ordering="NONE"
 side="BOTH"
